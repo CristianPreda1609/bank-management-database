@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clienți cu conturi multiple</title>
+    <style>
+        .button-link {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-link:hover {
+            background-color: #45a049;
+            border: 1px solid #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rezultate SQL</h1>
+
+    {% if rezultate_sql %}
+        <table border="1">
+            <tr>
+                <th>Nume</th>
+                <th>Prenume</th>
+                <th>Număr Conturi</th>
+            </tr>
+            {% for result in rezultate_sql %}
+                <tr>
+                    <td>{{ result[0] }}</td>
+                    <td>{{ result[1] }}</td>
+                    <td>{{ result[2] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Nu au fost găsite rezultate.</p>
+    {% endif %}
+
+    <a href="{{ url_for('index') }}" class="button-link">Înapoi la Pagina Principală</a>
+</body>
+</html>

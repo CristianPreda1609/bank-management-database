@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managementul Unei Bănci</title>
+    <style>
+        .button-link {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-link:hover {
+            background-color: #45a049;
+            border: 1px solid #45a049;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#table_name').on('change', function() {
+                var selectedTable = $(this).val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/get_columns',
+                    data: { table_name: selectedTable },
+                    success: function(data) {
+                        var sortColumnSelect = $('#sort_column');
+                        sortColumnSelect.empty();
+                        $.each(data, function(index, column) {
+                            sortColumnSelect.append('<option value="' + column + '">' + column + '</option>');
+                        });
+                    }
+                });
+            });
+
+
+        });
+    </script>
+</head>
+<body>
+    <h1>Managementul Unei Bănci</h1>
+    <form action="/list_and_sort" method="post">
+        <label for="table_name">Numele tabelului:</label>
+        <select name="table_name" id="table_name" required>
+            {% for table in table_names %}
+                <option value="{{ table }}">{{ table }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="sort_column">Atribut de sortare:</label>
+        <select name="sort_column" id="sort_column" required>
+        </select>
+
+        <label for="sort_direction">Direcția de sortare:</label>
+        <select name="sort_direction" required>
+            <option value="asc">Crescător</option>
+            <option value="desc">Descrescător</option>
+        </select>
+
+        <button type="submit">Listare și sortare</button>
+    </form>
+
+    {% if table_name and columns %}
+        <h2>Datele din tabelul "{{ table_name }}"</h2>
+        <table border="1">
+            <tr>
+                {% for column in columns %}
+                    <th>{{ column }}</th>
+                {% endfor %}
+                <th>Acțiuni</th>
+            </tr>
+            {% for row in result %}
+                <tr>
+                    {% for value in row %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                    <td>
+                        <a href="/edit/{{ table_name }}/{{ row[0] }}">Editare</a>
+                        <a href="/delete/{{ table_name }}/{{ row[0] }}">Ștergere</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    <a class="button-link" href="/search_results">Clienti cu conturi Active și Sume Negative</a>
+
+    <a href="{{ url_for('rezultate_sql') }}" class="button-link">Clienti cu conturi multiple</a>
+
+    <a href="{{ url_for('vizualizare_sume_conturi_moneda') }}" class="button-link">Vizualizare Sume Conturi Moneda</a>
+
+    <a href="{{ url_for('vizualizare_informatii_depozite') }}" class="button-link">Vizualizare Informatii Depozite</a>
+
+    <a href="{{ url_for('vizualizare_tranzactii') }}" class="button-link">Vizualizare Tranzacții</a>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editare Înregistrare</title>
+</head>
+<body>
+    <h1>Editare Înregistrare în Tabelul "{{ table_name }}"</h1>
+    <form action="/update_record" method="post">
+        <input type="hidden" name="table_name" value="{{ table_name }}">
+        <input type="hidden" name="record_id" value="{{ record_id }}">
+        
+        <label for="column_name">Atributul de editat:</label>
+        <select name="column_name" required>
+            {% for column in columns %}
+                <option value="{{ column }}" {% if column == column_name %}selected{% endif %}>{{ column }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="new_value">Noua valoare:</label>
+        <input type="text" name="new_value" required><br>
+
+        <button type="submit">Salvare modificări</button>
+    </form>
+
+    <a href="{{ url_for('index') }}" class="button-link">Înapoi la Rezultatele Căutării</a>
+</body>
+</html>

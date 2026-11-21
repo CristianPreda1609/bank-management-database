@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ștergere Înregistrare</title>
+</head>
+<body>
+    <h1>Ștergere Înregistrare din Tabelul "{{ table_name }}"</h1>
+    <form action="/delete_record" method="post">
+        <input type="hidden" name="table_name" value="{{ table_name }}">
+        <input type="hidden" name="record_id" value="{{ record_id }}">
+        
+        <p>Sunteți sigur că doriți să ștergeți această înregistrare?</p>
+
+        <button type="submit">Șterge</button>
+    </form>
+
+    <a href="{{ url_for('index') }}">Înapoi la Pagina Principală</a>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmare Ștergere Tranzacție</title>
+</head>
+<body>
+    <h1>Confirmare Ștergere Tranzacție</h1>
+
+    <p>Sunteți sigur că doriți să ștergeți această tranzacție?</p>
+
+    <form method="POST" action="{{ url_for('confirm_delete_tranzactie', tranzactie_id=tranzactie_id) }}">
+        <button type="submit">Da, șterge</button>
+    </form>
+
+    <a href="{{ url_for('vizualizare_tranzactii_page') }}" class="button-link">Anulează</a>
+</body>
+</html>

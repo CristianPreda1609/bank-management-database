@@ -1,0 +1,236 @@
+CREATE DATABASE Managementul_Unei_Banci;
+
+USE Managementul_Unei_Banci;
+
+CREATE TABLE Clienti(
+		ClientID int NOT NULL,
+        Nume varchar(255) NOT NULL,
+        Prenume varchar(255) NOT NULL,
+        CNP varchar(255) UNIQUE NOT NULL,
+        Email varchar(255),
+        Nr_Telefon varchar(255) NOT NULL,
+        CONSTRAINT PK_Clienti primary key (ClientID)
+);
+CREATE TABLE LOCATII(
+		LocatieID int NOT NULL,
+		Oras varchar(255) NOT NULL,
+        Judet varchar(255) NOT NULL,
+        CONSTRAINT PK_Locatii primary key (LocatieID)
+);
+CREATE TABLE Sucursale(
+		Locatie int NOT NULL,
+		SucursalaID int NOT NULL,
+		Nume varchar(255) NOT NULL,
+        Adresa varchar(255) NOT NULL,
+        Program varchar(255),
+        Stat varchar(255),
+        CONSTRAINT PK_Sucursala primary key (SucursalaID),
+        CONSTRAINT FK_Locatii foreign key (Locatie) references Locatii(LocatieID) on delete cascade
+);
+CREATE TABLE Angajati(
+		AngajatID int NOT NULL,
+		Sucursala int NOT NULL,
+		Nume varchar(255) NOT NULL,
+        Salariul varchar(255) NOT NULL,
+        Prenume varchar(255),
+        Data_angajare date NOT NULL,
+        CONSTRAINT PK_Angajat primary key (AngajatID),
+        CONSTRAINT FK_Sucrusala foreign key (Sucursala) references Sucursale(SucursalaID) on delete cascade
+);
+CREATE TABLE Conturi(
+		ContID int NOT NULL,
+		Clienti int NOT NULL,
+        Sucursala int,
+		Iban varchar(255) NOT NULL UNIQUE,
+        Moneda varchar(255) NOT NULL,
+        Stat varchar(255) not null,
+        Tip bool not null,
+        CONSTRAINT PK_Cont primary key (ContID),
+        CONSTRAINT FK_Clienti foreign key (Clienti) references Clienti(ClientID) on delete cascade,
+        CONSTRAINT FK_Sucrusala2 foreign key (Sucursala) references Sucursale(SucursalaID) on delete set NULL
+);
+CREATE TABLE Depozite(
+		DepozitID int NOT NULL,
+		Cont int NOT NULL,
+		Data_Incepere timestamp NOT NULL,
+		Data_Terminare timestamp NOT NULL,
+        Penalizare float,
+        Dobanda float not null,
+        CONSTRAINT PK_Depozit primary key (DepozitID),
+        CONSTRAINT FK_ContDepozit foreign key (Cont) references Conturi(Contid) on delete cascade
+);
+CREATE TABLE Tranzactii(
+		TranzactieID int NOT NULL,
+		Cont int NOT NULL,
+		Nume varchar(255) not null,
+		Data_tranz timestamp not null,
+        Suma float not null,
+        Iban_participant varchar(255),
+        Stat varchar(255),
+        CONSTRAINT PK_Tranzactie primary key (TranzactieID),
+        CONSTRAINT FK_ContTranzactie foreign key (Cont) references Conturi(Contid) on delete cascade
+);
+CREATE TABLE Carduri(
+		CardID int NOT NULL,
+		Cont int NOT NULL,
+		Data_Expirare date Not NULL,
+        Cod_Securitate varchar(255) NOT NULL,
+        Tip_Card bool not null,
+        Dobanda float,
+        CONSTRAINT PK_Depozit primary key (CardID),
+        CONSTRAINT FK_ContCard foreign key (Cont) references Conturi(Contid) on delete cascade
+);
+INSERT INTO Clienti (ClientID, Nume, Prenume, CNP, Email, Nr_Telefon)
+VALUES 
+    (1, 'Popescu', 'Ion', '1234567890123', 'popescu@example.com', '0712345678'),
+    (2, 'Ionescu', 'Maria', '2345678901234', 'ionescu@example.com', '0723456789'),
+    (3, 'Georgescu', 'Ana', '3456789012345', 'georgescu@example.com', '0734567890'),
+    (4, 'Constantinescu', 'Andrei', '4567890123456', 'constantinescu@example.com', '0745678901'),
+    (5, 'Dragomir', 'Elena', '5678901234567', 'dragomir@example.com', '0756789012'),
+    (6, 'Stoica', 'Mihai', '6789012345678', 'stoica@example.com', '0767890123'),
+    (7, 'Gheorghe', 'Alexandra', '7890123456789', 'gheorghe@example.com', '0778901234'),
+    (8, 'Dumitrescu', 'Cristina', '8901234567890', 'dumitrescu@example.com', '0789012345'),
+    (9, 'Popa', 'Gabriel', '9012345678901', 'popa@example.com', '0790123456'),
+    (10, 'Radulescu', 'Diana', '0123456789012', NULL, '0801234567'),
+    (11, 'Stanescu', 'Florin', '1212121212121', 'stanescu@example.com', '0812121212'),
+    (12, 'Munteanu', 'Andreea', '2323232323232', 'munteanu@example.com', '0823232323'),
+    (13, 'Petrescu', 'Raluca', '3434343434343', 'petrescu@example.com', '0834343434'),
+    (14, 'Marinescu', 'Dan', '4545454545454', 'marinescu@example.com', '0845454545'),
+    (15, 'Diaconu', 'Bogdan', '5656565656565', 'diaconu@example.com', '0856565656');
+INSERT INTO LOCATII (LocatieID, Oras, Judet)
+VALUES 
+    (1, 'Bucuresti', 'Bucuresti'),
+    (2, 'Cluj-Napoca', 'Cluj'),
+    (3, 'Timisoara', 'Timis'),
+    (4, 'Iasi', 'Iasi'),
+    (5, 'Brasov', 'Brasov'),
+    (6, 'Constanta', 'Constanta'),
+    (7, 'Oradea', 'Bihor'),
+    (8, 'Sibiu', 'Sibiu'),
+    (9, 'Ploiesti', 'Prahova'),
+    (10, 'Galati', 'Galati'),
+    (11, 'Craiova', 'Dolj'),
+    (12, 'Arad', 'Arad'),
+    (13, 'Baia Mare', 'Maramures'),
+    (14, 'Targu Mures', 'Mures'),
+    (15, 'Buzau', 'Buzau');
+    
+INSERT INTO Sucursale (Locatie, SucursalaID, Nume, Adresa, Program, Stat)
+VALUES 
+    (1, 1, 'Sucursala Centrala', 'Str. Victoriei nr. 1', 'Luni-Vineri 9-17', 'Activ'),
+    (2, 2, 'Sucursala Nord', 'Str. Clujului nr. 10', 'Luni-Vineri 8-16', 'Activ'),
+    (3, 3, 'Sucursala Vest', 'Str. Timisoarei nr. 5', 'Luni-Vineri 9-18', 'Activ'),
+    (4, 4, 'Sucursala Est', 'Str. Iasului nr. 7', 'Luni-Vineri 8-17', 'Activ'),
+    (5, 5, 'Sucursala Sud', 'Str. Brasovului nr. 3', 'Luni-Vineri 9-16', 'Activ'),
+    (6, 6, 'Sucursala Mare', 'Str. Constantei nr. 12', 'Luni-Vineri 10-19', 'Activ'),
+    (7, 7, 'Sucursala Vest', 'Str. Oradea nr. 8', 'Luni-Vineri 9-17', 'Activ'),
+    (8, 8, 'Sucursala Sibiu', 'Str. Sibiu nr. 6', 'Luni-Vineri 8-18', 'Activ'),
+    (9, 9, 'Sucursala Ploiesti', 'Str. Ploiesti nr. 11', 'Luni-Vineri 9-17', 'Activ'),
+    (10, 10, 'Sucursala Galati', 'Str. Galati nr. 4', 'Luni-Vineri 8-16', 'Activ'),
+    (11, 11, 'Sucursala Craiova', 'Str. Craiova nr. 9', 'Luni-Vineri 9-18', 'Activ'),
+    (12, 12, 'Sucursala Arad', 'Str. Arad nr. 14', 'Luni-Vineri 8-17', 'Activ'),
+    (13, 13, 'Sucursala Baia Mare', 'Str. Baia Mare nr. 15', 'Luni-Vineri 9-17', 'Activ'),
+    (14, 14, 'Sucursala Targu Mures', 'Str. Targu Mures nr. 16', 'Luni-Vineri 8-16', 'Activ'),
+    (15, 15, 'Sucursala Buzau', 'Str. Buzau nr. 18', 'Luni-Vineri 9-18', 'Activ');
+
+INSERT INTO Angajati (AngajatID, Sucursala, Nume, Salariul, Prenume, Data_angajare)
+VALUES 
+    (1, 1, 'Popescu', '3000', 'Ion', '2023-01-15'),
+    (2, 2, 'Ionescu', '3200', 'Maria', '2022-11-20'),
+    (3, 3, 'Georgescu', '2800', 'Andrei', '2023-03-05'),
+    (4, 4, 'Constantinescu', '3100', 'Elena', '2023-02-10'),
+    (5, 5, 'Dragomir', '2900', 'Mihai', '2023-04-25'),
+    (6, 6, 'Stoica', '3000', 'Alexandra', '2022-12-30'),
+    (7, 7, 'Gheorghe', '3100', 'Cristina', '2023-06-18'),
+    (8, 8, 'Dumitrescu', '3200', 'Gabriel', '2023-07-22'),
+    (9, 9, 'Popa', '3000', 'Diana', '2023-08-12'),
+    (10, 10, 'Radulescu', '3100', 'Florin', '2023-09-09'),
+    (11, 11, 'Stanescu', '2900', 'Andreea', '2023-10-11'),
+    (12, 12, 'Munteanu', '3000', 'Raluca', '2023-11-14'),
+    (13, 13, 'Petrescu', '3200', 'Dan', '2023-12-19'),
+    (14, 14, 'Marinescu', '3100', 'Bogdan', '2024-01-20'),
+    (15, 15, 'Diaconu', '3000', 'Laura', '2024-02-25');
+
+INSERT INTO Conturi (ContID, Clienti, Sucursala, Iban, Moneda, Stat, Tip)
+VALUES 
+    (1, 1, 1, 'RO11ABCD1234567890123456', 'RON', 'Activ', 0),
+    (2, 2, 2, 'RO22ABCD1234567890123456', 'EUR', 'Activ', 0),
+    (3, 3, 3, 'RO33ABCD1234567890123456', 'RON', 'Activ', 0),
+    (4, 4, 4, 'RO44ABCD1234567890123456', 'USD', 'Activ', 0),
+    (5, 5, 5, 'RO55ABCD1234567890123456', 'RON', 'Activ', 0),
+    (6, 6, 6, 'RO66ABCD1234567890123456', 'EUR', 'Activ', 0),
+    (7, 7, 7, 'RO77ABCD1234567890123456', 'RON', 'Activ', 0),
+    (8, 8, 8, 'RO88ABCD1234567890123456', 'USD', 'Activ', 0),
+    (9, 9, 9, 'RO99ABCD1234567890123456', 'RON', 'Activ', 0),
+    (10, 10, 10, 'RO10ABCD1234567890123456', 'EUR', 'Activ', 0),
+    (11, 11, 11, 'RO12ABCD1234567890123456', 'RON', 'Activ', 0),
+    (12, 12, 12, 'RO13ABCD1234567890123456', 'USD', 'Activ', 0),
+    (13, 13, 13, 'RO14ABCD1234567890123456', 'RON', 'Activ', 0),
+    (14, 14, 14, 'RO15ABCD1234567890123456', 'EUR', 'Activ', 0),
+    (15, 15, 15, 'RO16ABCD1234567890123456', 'RON', 'Activ', 1);
+INSERT INTO Depozite (DepozitID, Cont, Data_Incepere, Data_Terminare, Penalizare, Dobanda)
+VALUES 
+    (1, 1, '2023-01-20', '2023-07-20', NULL, 3.5),
+    (2, 2, '2023-02-15', '2023-08-15', 0.03, 4),
+    (3, 3, '2023-03-10', '2023-09-10', 0.06, 3),
+    (4, 4, '2023-04-25', '2023-10-25', 0.08, 3.8),
+    (5, 5, '2023-05-30', '2023-11-30', 0.04, 4.2),
+    (6, 6, '2023-06-18', '2023-12-18', 0.07, 3.2),
+    (7, 7, '2023-07-22', '2024-01-22', 0.09, 3.9),
+    (8, 8, '2023-08-12', '2024-02-12', 0.05, 4.1),
+    (9, 9, '2023-09-09', '2024-03-09', 0.07, 3.7),
+    (11, 11, '2023-11-14', '2024-05-14', 0.06, 4.3),
+    (12, 12, '2023-12-19', '2024-06-19', 0.08, 3.4),
+    (13, 13, '2024-01-20', '2024-07-20', 0.03, 4.5),
+    (14, 14, '2024-02-25', '2024-08-25', 0.05, 3.9),
+    (15, 15, '2024-03-30', '2024-09-30', 0.07, 4);
+    
+INSERT INTO Tranzactii (TranzactieID, Cont, Nume, Data_tranz, Suma, Iban_participant, Stat)
+VALUES 
+    (1, 1, 'Plata Factura', '2023-01-25 10:00:00', 500, 'RO99ABCD1234567890123456', 'Finalizat'),
+    (2, 2, 'Transfer Intern', '2023-02-18 15:30:00', 800, 'RO11ABCD1234567890123456', 'In Procesare'),
+    (3, 3, 'Plata Online', '2023-03-12 12:45:00', 300, 'RO88ABCD1234567890123456', 'Finalizat'),
+    (4, 4, 'Plata Utilitati', '2023-04-30 09:20:00', 700, 'RO22ABCD1234567890123456', 'Finalizat'),
+    (5, 5, 'Transfer Extern', '2023-05-15 11:10:00', 1000, 'RO77ABCD1234567890123456', 'In Procesare'),
+    (6, 6, 'Plata Factura', '2023-06-20 14:00:00', 450, 'RO66ABCD1234567890123456', 'Finalizat'),
+    (7, 7, 'Transfer Intern', '2023-07-25 09:45:00', 600, 'RO55ABCD1234567890123456', 'Finalizat'),
+    (8, 8, 'Plata Online', '2023-08-10 13:20:00', 850, 'RO44ABCD1234567890123456', 'In Procesare'),
+    (9, 9, 'Plata Utilitati', '2023-09-05 10:30:00', 400, 'RO33ABCD1234567890123456', 'Finalizat'),
+    (10, 10, 'Transfer Extern', '2023-10-12 11:15:00', -720, 'RO11ABCD1234567890123456', 'Finalizat'),
+    (11, 11, 'Plata Factura', '2023-11-18 16:00:00', 930, 'RO77ABCD1234567890123456', 'In Procesare'),
+    (12, 12, 'Transfer Intern', '2023-12-24 10:40:00', 550, 'RO22ABCD1234567890123456', 'Finalizat'),
+    (13, 13, 'Plata Online', '2024-01-30 12:05:00', 780, 'RO99ABCD1234567890123456', 'Finalizat'),
+    (14, 14, 'Plata Utilitati', '2024-02-28 09:55:00', 660, 'RO66ABCD1234567890123456', 'In Procesare'),
+    (15, 15, 'Transfer Extern', '2024-03-25 11:50:00', 880, 'RO55ABCD1234567890123456', 'Finalizat');
+
+INSERT INTO Carduri (CardID, Cont, Data_Expirare, Cod_Securitate, Tip_Card, Dobanda)
+VALUES 
+    (1, 1, '2023-05-01', '123', 0, 0),
+    (2, 2, '2023-06-02', '234', 0, 0),
+    (3, 3, '2023-07-03', '345', 0, 0),
+    (4, 4, '2023-08-04', '456', 0, 0),
+    (5, 5, '2023-09-05', '567', 0, 0),
+    (6, 6, '2023-10-06', '678', 0, 0),
+    (7, 7, '2023-11-07', '789', 0, 0),
+    (8, 8, '2023-12-08', '890', 0, 0),
+    (9, 9, '2024-01-09', '901', 0, 0),
+    (10, 10, '2024-02-10', '012', 1, 5.7),
+    (11, 11, '2024-03-11', '123', 0, 0.5),
+    (12, 12, '2024-04-12', '234', 0, 0.6),
+    (13, 13, '2024-05-13', '345', 0, 0.8),
+    (14, 14, '2024-06-14', '456', 0, 0.4),
+    (15, 15, '2024-07-15', '567', 1, 7.7);
+    INSERT INTO Clienti (ClientID, Nume, Prenume, CNP, Email, Nr_Telefon)
+VALUES 
+    (166, 'Popescu', 'Ion', '12342237890123', 'popescu@example.com', '0712345678');
+    INSERT INTO Conturi (ContID, Clienti, Sucursala, Iban, Moneda, Stat, Tip)
+VALUES 
+    (124, 166, 1, 'RO11ABCD123456789220123456', 'RON', 'Activ', 0);
+    INSERT INTO Tranzactii (TranzactieID, Cont, Nume, Data_tranz, Suma, Iban_participant, Stat)
+VALUES 
+    (111, 124, 'Plata Factura', '2023-01-25 10:00:00', 1444444, 'RO11ABCD123456789220123456', 'Finalizat');
+    
+SELECT * FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = 'managementul_unei_banci';
+
+
+

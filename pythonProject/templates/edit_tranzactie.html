@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editare Tranzacție</title>
+</head>
+<body>
+    <h1>Editare Tranzacție</h1>
+
+    <form method="POST" action="">
+        <label for="select_column">Selectați coloana:</label>
+        <select id="select_column" name="select_column">
+            {% for column in columns %}
+                <option value="{{ column }}" {% if column == selected_column %}selected{% endif %}>{{ column }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="new_value">Valoare nouă:</label>
+        <input type="text" name="new_value" value="{{ tranzactie[1] }}" required>
+
+        <!-- Alte câmpuri pentru editare în funcție de necesitățile dvs. -->
+
+        <button type="submit">Salvează modificările</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <a href="{{ url_for('vizualizare_tranzactii_page') }}" class="button-link">Înapoi la Vizualizare Tranzacții</a>
+</body>
+</html>
